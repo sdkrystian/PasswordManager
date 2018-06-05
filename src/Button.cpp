@@ -1,25 +1,28 @@
 #include "Button.h"
 
-Button::Button(int x, int y, Color textcolor, Color backgroundcolor, Color selectedtextcolor, Color selectedbackgroundcolor, Color activatedtextcolor, Color activatedtbackgroundcolor, std::string text, std::string selectedtext, std::string activatedtext, std::function<void()> activateaction, std::function<void()> deactivateaction, bool show, bool selected, bool activated) : Object(x, y), textcolor_(textcolor), backgroundcolor_(backgroundcolor), selectedtextcolor_(selectedtextcolor), selectedbackgroundcolor_(selectedbackgroundcolor), activatedbackgroundcolor_(activatedtbackgroundcolor), activatedtextcolor_(activatedtextcolor), text_(text), selectedtext_(selectedtext), activatedtext_(activatedtext), activateaction_(activateaction), deactivateaction_(deactivateaction), show_(show), selected_(selected), activated_(activated)
+Button::Button(int x, int y, Color textcolor, Color backgroundcolor, Color selectedtextcolor, Color selectedbackgroundcolor, Color activatedtextcolor, const std::string& text, const std::string& selectedtext, const std::string& activatedtext, const std::function<void()>& activateaction, const std::function<void()>& deactivateaction, bool centered, bool show, bool activated) :
+  Object(x, y, show), textcolor_(textcolor), backgroundcolor_(backgroundcolor), selectedtextcolor_(selectedtextcolor), selectedbackgroundcolor_(selectedbackgroundcolor), activatedtextcolor_(activatedtextcolor), text_(text), selectedtext_(selectedtext), activatedtext_(activatedtext), activateaction_(activateaction), deactivateaction_(deactivateaction), activated_(activated), selected_(false)
 {
+  if (centered)
+    x_ = (Console::GetSize().X - text.length()) / 2;
   if (show)
     Show(true);
 }
 
-void Button::Select() const
+void Button::Select()
 {
   Select(!selected_);
 }
 
-void Button::Select(bool select) const
+void Button::Select(bool select)
 {
+  selected_ = select;
   if (!select)
   {
-    selected_ = false;
     if (activated_)
     {
       Console::ClearAt(x_, y_, activatedtext_.length());
-      Console::WriteLineAt(x_, y_, activatedtext_, activatedtextcolor_, activatedbackgroundcolor_);
+      Console::WriteLineAt(x_, y_, activatedtext_, activatedtextcolor_, backgroundcolor_);
     }
     else
     {
@@ -29,10 +32,10 @@ void Button::Select(bool select) const
   }
   else
   {
-    selected_ = true;
     if (activated_)
     {
-      return;
+      Console::ClearAt(x_, y_, selectedtext_.length());
+      Console::WriteLineAt(x_, y_, activatedtext_, activatedtextcolor_, selectedbackgroundcolor_);
     }
     else
     {
@@ -42,16 +45,21 @@ void Button::Select(bool select) const
   }
 }
 
-void Button::Press() const
+void Button::Press()
 {
   Press(!activated_);
 }
 
-void Button::Press(bool press) const
+bool Button::Hidden() const
 {
+  return !show_;
+}
+
+void Button::Press(bool press)
+{
+  activated_ = press;
   if (!press)
   {
-    activated_ = false;
     if (selected_)
     {
       Console::ClearAt(x_, y_, activatedtext_.length());
@@ -66,28 +74,29 @@ void Button::Press(bool press) const
   }
   else
   {
-    activated_ = true;
     if (selected_)
     {
       Console::ClearAt(x_, y_, selectedtext_.length());
-      Console::WriteLineAt(x_, y_, activatedtext_, activatedtextcolor_, activatedbackgroundcolor_);
+      Console::WriteLineAt(x_, y_, activatedtext_, activatedtextcolor_, selectedbackgroundcolor_);
     }
     else
     {
       Console::ClearAt(x_, y_, text_.length());
-      Console::WriteLineAt(x_, y_, activatedtext_, activatedtextcolor_, activatedbackgroundcolor_);
+      Console::WriteLineAt(x_, y_, activatedtext_, activatedtextcolor_, selectedbackgroundcolor_);
     }
     activateaction_();
   }
+
 }
 
-void Button::Show(bool show) const
+void Button::Show(bool show)
 {
+  show_ = show;
   if (show)
   {
     if (activated_)
     {
-      Console::WriteLineAt(x_, y_, activatedtext_, activatedtextcolor_, activatedbackgroundcolor_);
+      Console::WriteLineAt(x_, y_, activatedtext_, activatedtextcolor_, backgroundcolor_);
     }
     else if (selected_)
     {
@@ -115,12 +124,6 @@ void Button::Show(bool show) const
   }
 }
 
-
-bool Button::Selectable() const
-{
-  return true;
-}
-
 bool Button::Activated() const
 {
   return activated_;
@@ -131,21 +134,13 @@ bool Button::Selected() const
   return selected_;
 }
 
-void Button::Move(int x, int y) const
+void Button::Move(int x, int y)
 {
-  Show(false);
+  bool show = show_;
+  if (show)
+    Show(false);
   x_ = x;
   y_ = y;
-  if (show_)
+  if (show)
     Show(true);
-}
-
-int Button::X() const
-{
-  return x_;
-}
-
-int Button::Y() const
-{
-  return y_;
 }

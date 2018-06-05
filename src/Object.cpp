@@ -11,8 +11,3 @@ int Object::Y() const
 {
   return y_;
 }
-
-ObjectType Object::GetType()
-{
-  return type_;
-}

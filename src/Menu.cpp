@@ -1,73 +1,44 @@
 #include "Menu.h"
 #include <algorithm>
 #include <iostream>
-#include "Element.h"
+#include "Button.h"
 #include <functional>
 
-std::vector<Element> Menu::elements_ = { };
-std::vector<Category> Menu::categories_ = {};
-unsigned Menu::xindex_ = 0;
-unsigned Menu::yindex_ = 0;
-int Menu::selectedcat_ = 0;
-int Menu::selectedelem_ = -1;
+std::vector<Button> Menu::Buttons_ = { };
+int Menu::selectedelem_ = 0;
 
-std::vector<Category>& Menu::Categories()
+std::vector<Button>& Menu::Buttons()
 {
-  return categories_;
-}
-
-std::vector<Element>& Menu::Elements()
-{
-  return elements_;
-}
-
-int Menu::CategoryIndex()
-{
-  return selectedcat_;
+  return Buttons_;
 }
 
 void Menu::NextUp()
 {
-  if (selectedcat_ - 1 >= 0)
+  if (selectedelem_ - 1 >= 0)
   {
-    categories_[selectedcat_].Select(false);
-    categories_[--selectedcat_].Select(true);
+    Buttons_[selectedelem_].Select(false);
+    Buttons_[--selectedelem_].Select(true);
   }
 }
 
 void Menu::NextDown()
 {
-  if (selectedcat_ + 1 < categories_.size())
+  if (selectedelem_ + 1 < Buttons_.size())
   {
-    categories_[selectedcat_].Select(false);
-    categories_[++selectedcat_].Select(true);
+    Buttons_[selectedelem_].Select(false);
+    Buttons_[++selectedelem_].Select(true);
   }
 }
 
 void Menu::Press()
 {
-  if (selectedelem_ == -1)
-  {
-    categories_[selectedcat_].Press();
-  }
-  else
-  {
-    elements_[selectedelem_].Press();
-  }
-  Redraw();
+  Buttons_[selectedelem_].Press();
+  //Redraw();
 }
 
 void Menu::Redraw()
 {
-  for (Category& c : categories_)
-  {
-    if (!c.Hidden())
-    {
-      c.Show(false);
-      c.Show(true);
-    }
-  }
-  for (Element& e : elements_)
+  for (Button& e : Buttons_)
   {
     if (!e.Hidden())
     {
