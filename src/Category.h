@@ -1,17 +1,19 @@
 #pragma once
 #include "Object.h"
-#include "Button.h"
+#include "Element.h"
 #include "Console.h"
 #include <vector>
 
-class Category : public Button
+class Category : public Element
 {
 public:
-  Category(unsigned x, unsigned y, Color textcolor, Color backgroundcolor, Color selectedtextcolor, Color selectedbackgroundcolor, Color activatedtextcolor, Color activatedtbackgroundcolor, std::string text, std::string selectedtext, std::string activatedtext, std::vector<Button> objects, bool opened = false);
-  std::vector<Button> Buttons();
-private:
+  Category(unsigned x, unsigned y, Color textcolor, Color backgroundcolor, Color selectedtextcolor, Color selectedbackgroundcolor, Color activatedtextcolor, Color activatedtbackgroundcolor, const std::string& text, const std::string& selectedtext, const std::string& activatedtext, std::vector<int> elements, bool opened = false, bool show_ = true);
+  std::vector<int>& Elements();
   void ShowList();
   void HideList();
-  bool opened_;
-  std::vector<Button> buttons_;
+  bool Opened();
+private:
+  void Move(int x, int y) override;
+  mutable bool opened_;
+  std::vector<int> elements_;
 };

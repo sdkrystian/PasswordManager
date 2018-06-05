@@ -3,20 +3,26 @@
 enum class ObjectType
 {
   BUTTON,
-  CATEGORY,
   TEXT,
-  INPUT,
   PASSWORD
 };
 
 class Object
 {
+public:
+  int X() const;
+  int Y() const;
+  ObjectType GetType();
+  virtual void Select(bool select) = 0;
+  virtual void Select() = 0;
+  virtual void Show(bool show) = 0;
+  virtual void Move(int x, int y) = 0;
+  virtual bool Hidden() const = 0;
 protected:
-  mutable int x_;
-  mutable int y_;
+  int x_;
+  int y_;
+  bool show_;
+  ObjectType type_;
 
-  Object(int x, int y);
-  
-  virtual void Show(bool) const = 0;
-  virtual bool Selectable() const = 0;
+  Object(int x, int y, bool show);
 };
