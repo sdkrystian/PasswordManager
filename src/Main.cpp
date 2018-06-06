@@ -24,14 +24,26 @@ int main()
         Menu::NextUp();
       if (Input::GetKeyDown(VK_RETURN))
         Menu::Press();
-    } 
+    }
+    else
+    {
+      Console::SetCursorPosition(Menu::InputX(), Menu::InputY());
+      std::string input = Console::ReadLine();
+      if (!input.empty())
+        Menu::ExecuteInputCallback(input);
+    }
   }
   return 0;
 }
 
+void CreateCategory(std::string name)
+{
+  Menu::Enabled() = true;
+  Console::ShowConsoleCursor(false);
+}
+
 void NewCategory()
 {
-  Menu::Enabled() = false;
   Menu::Clear();
   Console::WriteLine("");
   Console::WriteLineCentered("[ new category ]", Color::LIGHT_AQUA);
@@ -40,11 +52,10 @@ void NewCategory()
   Console::WriteLine("");
   Console::WriteLineCentered("Category Name", Color::LIGHT_GREEN);
   Console::ColorLineCentered(Color::LIGHT_GREEN, 16);
-  Console::SetCursorPosition((Console::GetSize().X - 16) / 2, Console::GetCursorPosition().Y);
+  Console::SetColor(Color::LIGHT_PURPLE, Color::LIGHT_GREEN);
+  Menu::Enabled() = false;
   Console::ShowConsoleCursor(true);
-  //Console::ReadLine(Color::WHITE, Color::LIGHT_GREEN);
-  Menu::Enabled() = true;
-  //Menu::Buttons()[0].Select(true);
+  Menu::SetInputCallback(CreateCategory, (Console::GetSize().X - 16) / 2, Console::GetCursorPosition().Y);
 }
 
 void EditCategory()
