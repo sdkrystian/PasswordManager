@@ -9,7 +9,7 @@ int Menu::selectedbutton_ = 0;
 bool Menu::enabled_ = true;
 unsigned Menu::inputcallbackx_;
 unsigned Menu::inputcallbacky_;
-std::function<void(std::string)> Menu::inputcallback_;
+std::function<void(const std::string&)> Menu::inputcallback_;
 
 std::vector<Button>& Menu::Buttons()
 {
@@ -21,7 +21,7 @@ void Menu::AddButtons(const std::vector<Button>& buttons)
   buttons_.insert(buttons_.end(), buttons.begin(), buttons.end());
 }
 
-void Menu::SetInputCallback(std::function<void(std::string)> callback, unsigned x, unsigned y)
+void Menu::SetInputCallback(std::function<void(const std::string&)> callback, unsigned x, unsigned y)
 {
   inputcallback_ = callback;
   inputcallbackx_ = x;
@@ -31,13 +31,6 @@ void Menu::SetInputCallback(std::function<void(std::string)> callback, unsigned 
 void Menu::ExecuteInputCallback(const std::string& input)
 {
   inputcallback_(input);
-}
-
-void Menu::CloseCallback()
-{
-  inputcallback_ = [] (std::string) {};
-  inputcallbackx_ = 0;
-  inputcallbacky_ = 0;
 }
 
 void Menu::NextUp()
