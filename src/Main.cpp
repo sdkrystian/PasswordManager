@@ -16,6 +16,7 @@
 void ShowConfiguration();
 void ShowMain();
 void ViewCategories();
+void DeleteEntry();
 
 int main()
 { 
@@ -69,13 +70,13 @@ void NewCategory()
     Console::ShowConsoleCursor(false);
     if (std::any_of(UserInfo::Categories().begin(), UserInfo::Categories().end(), [&] (Category& x) { return x.name == name; }))
     {
-      Popup(1000, 8, 20, 3, "Already Exists", Color::WHITE, Color::LIGHT_RED);
+      Popup(1000, 6, 20, 3, "Already Exists", Color::WHITE, Color::LIGHT_RED);
       ShowConfiguration();
     }
     else
     {
       UserInfo::Categories().push_back({ name, std::vector<Entry>() });
-      Popup(1000, 8, 20, 3, "Category Added", Color::WHITE, Color::LIGHT_GREEN);
+      Popup(1000, 6, 20, 3, "Category Added", Color::WHITE, Color::LIGHT_GREEN);
       ShowConfiguration();
     }
   }, (Console::GetSize().X - 16) / 2, 4);
@@ -91,7 +92,8 @@ void EntrySelection(Category& category)
   int j = 0;
   for (Entry& e : category.entries)
   {
-    Menu::Buttons().emplace_back(0, (j++) + 4, Color::WHITE, Color::BLACK, Color::BLACK, Color::WHITE, Color::LIGHT_PURPLE, e.name, e.name, e.name, [&] () {
+    Menu::Buttons().emplace_back(0, (j++) + 4, Color::WHITE, Color::BLACK, Color::BLACK, Color::WHITE, Color::LIGHT_PURPLE, e.name, e.name, e.name, [&] () 
+    {
       int spacing = 10;
       Menu::Clear();
       Console::WriteLine("");
@@ -154,8 +156,8 @@ void DeleteCategory()
     Menu::Buttons().emplace_back(0, (i++) + 4, Color::WHITE, Color::BLACK, Color::BLACK, Color::WHITE, Color::LIGHT_PURPLE, c.name, c.name, c.name, [&] ()
     { 
       UserInfo::Categories().erase(std::find_if(UserInfo::Categories().begin(), UserInfo::Categories().end(), [&] (Category& x) { return x.name == c.name; }));
-      Popup(1000, 8, 20, 3, "Category Deleted", Color::WHITE, Color::LIGHT_GREEN);
-      ShowConfiguration(); 
+      Popup(1000, 6, 20, 3, "Category Deleted", Color::WHITE, Color::LIGHT_GREEN);
+      DeleteCategory();
     }, [] () {}, true);
   }
   Menu::Buttons().emplace_back(0, i + 5, Color::WHITE, Color::BLACK, Color::BLACK, Color::WHITE, Color::LIGHT_PURPLE, "Back", "Back", "Back", ShowConfiguration, [] () {}, true);
@@ -179,7 +181,7 @@ void CreateEntry(Category& category)
     Console::ShowConsoleCursor(false);
     if (std::any_of(category.entries.begin(), category.entries.end(), [&] (Entry& x) { return x.name == name; }))
     {
-      Popup(1000, 8, 20, 3, "Already Exists", Color::WHITE, Color::LIGHT_RED);
+      Popup(1000, 6, 20, 3, "Already Exists", Color::WHITE, Color::LIGHT_RED);
       ShowConfiguration();
     }
     else
@@ -257,7 +259,7 @@ void CreateEntry(Category& category)
                 Menu::Enabled() = true;
                 Console::ShowConsoleCursor(false);
                 entry.note = note;
-                Popup(1000, 8, 20, 3, "Entry Added", Color::WHITE, Color::LIGHT_GREEN);
+                Popup(1000, 6, 20, 3, "Entry Added", Color::WHITE, Color::LIGHT_GREEN);
                 ShowConfiguration();
               }, (Console::GetSize().X - 16) / 2, 4);
             }, (Console::GetSize().X - 16) / 2, 4);
@@ -266,6 +268,43 @@ void CreateEntry(Category& category)
       }, (Console::GetSize().X - 16) / 2, 4);
     }
   }, (Console::GetSize().X - 16) / 2, 4);
+}
+
+void RemoveEntry(Category& category)
+{
+  Menu::Clear();
+  Console::WriteLine("");
+  Console::WriteLineCentered("[ " + category.name + " ]", Color::LIGHT_AQUA);
+  Console::WriteLine("");
+  Console::WriteLineCentered("Select Entry", Color::LIGHT_GREEN);
+  int j = 0;
+  for (Entry& e : category.entries)
+  {
+    Menu::Buttons().emplace_back(0, (j++) + 4, Color::WHITE, Color::BLACK, Color::BLACK, Color::WHITE, Color::LIGHT_PURPLE, e.name, e.name, e.name, [&] () 
+    {
+      category.entries.erase(std::find_if(category.entries.begin(), category.entries.end(), [&] (Entry& x) { return x.name == e.name; }));
+      Popup(1000, 6, 20, 3, "Entry Deleted", Color::WHITE, Color::LIGHT_GREEN);
+      RemoveEntry(category);
+    }, [] () {}, true);
+  }
+  Menu::Buttons().emplace_back(0, j + 5, Color::WHITE, Color::BLACK, Color::BLACK, Color::WHITE, Color::LIGHT_PURPLE, "Back", "Back", "Back", DeleteEntry, [] () {}, true);
+  Menu::Buttons()[0].Select();
+}
+
+void DeleteEntry()
+{
+  Menu::Clear();
+  Console::WriteLine("");
+  Console::WriteLineCentered("[ delete entry ]", Color::LIGHT_RED);
+  Console::WriteLine("");
+  Console::WriteLineCentered("Select Category", Color::LIGHT_GREEN);
+  int i = 0;
+  for (Category& c : UserInfo::Categories())
+  {
+    Menu::Buttons().emplace_back(0, (i++) + 4, Color::WHITE, Color::BLACK, Color::BLACK, Color::WHITE, Color::LIGHT_PURPLE, c.name, c.name, c.name, [&] () { RemoveEntry(c); }, [] () {}, true);
+  }
+  Menu::Buttons().emplace_back(0, i + 5, Color::WHITE, Color::BLACK, Color::BLACK, Color::WHITE, Color::LIGHT_PURPLE, "Back", "Back", "Back", ShowConfiguration, [] () {}, true);
+  Menu::Buttons()[0].Select();
 }
 
 void NewEntry()
@@ -295,7 +334,7 @@ void ShowConfiguration()
       Button(0, 4, Color::WHITE, Color::BLACK, Color::BLACK, Color::LIGHT_RED, Color::LIGHT_PURPLE, "Delete Category", "Delete Category", "Delete Category", DeleteCategory, [] () {}, true),
       Button(0, 5, Color::WHITE, Color::BLACK, Color::BLACK, Color::LIGHT_GREEN, Color::LIGHT_PURPLE, "New Entry", "New Entry", "New Entry", NewEntry, [] () {}, true),
       Button(0, 6, Color::WHITE, Color::BLACK, Color::BLACK, Color::LIGHT_YELLOW, Color::LIGHT_PURPLE, "Edit Entry", "Edit Entry", "Edit Entry", [] () {}, [] () {}, true),
-      Button(0, 7, Color::WHITE, Color::BLACK, Color::BLACK, Color::LIGHT_RED, Color::LIGHT_PURPLE, "Delete Entry", "Delete Entry", "Delete Entry", [] () {}, [] () {}, true),
+      Button(0, 7, Color::WHITE, Color::BLACK, Color::BLACK, Color::LIGHT_RED, Color::LIGHT_PURPLE, "Delete Entry", "Delete Entry", "Delete Entry", DeleteEntry, [] () {}, true),
       Button(0, 8, Color::WHITE, Color::BLACK, Color::BLACK, Color::WHITE, Color::LIGHT_PURPLE, "Back", "Back", "Back", ShowMain, [] () {}, true)
   });
   Menu::Buttons()[0].Select(true);
