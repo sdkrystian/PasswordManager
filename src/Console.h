@@ -61,9 +61,20 @@ public:
   static void WriteListCentered(const std::vector<std::string>& text, Color color, Color highlight);
   static void WriteListCentered(const std::vector<std::string>& text, Color color);
   static void WriteListCentered(const std::vector<std::string>& text);
+  static void ColorLine(Color color, unsigned length);
+  static void ColorLineCentered(Color color, unsigned length);
   static std::string ReadLine();
+  static std::string ReadLine(Color color);
+  static std::string ReadLine(Color color, Color highlight);
   static std::string ReadLinePrompt(const std::string& prompt, Color color);
   static std::string ReadLinePrompt(const std::string& prompt);
+  static std::string ReadLinePrompt(const std::string& prompt, Color color, Color highlight);
+  static std::string ReadLineAt(unsigned x, unsigned y);
+  static std::string ReadLineAt(unsigned x, unsigned y, Color color);
+  static std::string ReadLineAt(unsigned x, unsigned y, Color color, Color highlight);
+  static std::string ReadLinePromptAt(unsigned x, unsigned y, const std::string& prompt, Color color);
+  static std::string ReadLinePromptAt(unsigned x, unsigned y, const std::string& prompt);
+  static std::string ReadLinePromptAt(unsigned x, unsigned y, const std::string& prompt, Color color, Color highlight);
 private:
   static std::string CenterString(const std::string& str);
 };

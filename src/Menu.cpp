@@ -4,46 +4,56 @@
 #include "Button.h"
 #include <functional>
 
-std::vector<Button> Menu::Buttons_ = { };
-int Menu::selectedelem_ = 0;
+std::vector<Button> Menu::buttons_ = { };
+int Menu::selectedbutton_ = 0;
+bool enabled_ = true;
 
 std::vector<Button>& Menu::Buttons()
 {
-  return Buttons_;
+  return buttons_;
+}
+
+void Menu::AddButtons(const std::vector<Button>& buttons)
+{
+  buttons_.insert(buttons_.end(), buttons.begin(), buttons.end());
 }
 
 void Menu::NextUp()
 {
-  if (selectedelem_ - 1 >= 0)
+  if (selectedbutton_ - 1 >= 0)
   {
-    Buttons_[selectedelem_].Select(false);
-    Buttons_[--selectedelem_].Select(true);
+    buttons_[selectedbutton_].Select(false);
+    buttons_[--selectedbutton_].Select(true);
   }
 }
 
 void Menu::NextDown()
 {
-  if (selectedelem_ + 1 < Buttons_.size())
+  if (selectedbutton_ + 1 < buttons_.size())
   {
-    Buttons_[selectedelem_].Select(false);
-    Buttons_[++selectedelem_].Select(true);
+    buttons_[selectedbutton_].Select(false);
+    buttons_[++selectedbutton_].Select(true);
   }
 }
 
 void Menu::Press()
 {
-  Buttons_[selectedelem_].Press();
-  //Redraw();
+  if (!buttons_.empty())
+   buttons_[selectedbutton_].Press();
 }
 
-void Menu::Redraw()
+void Menu::Clear()
 {
-  for (Button& e : Buttons_)
+  selectedbutton_ = 0;
+  for (Button& b : buttons_)
   {
-    if (!e.Hidden())
-    {
-      e.Show(false);
-      e.Show(true);
-    }
+    b.Show(false);
   }
+  buttons_.clear();
+  Console::Clear();
+}
+
+bool& Menu::Enabled()
+{
+  return enabled_;
 }

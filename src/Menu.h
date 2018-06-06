@@ -7,11 +7,13 @@ class Menu
 {
 public:
   static std::vector<Button>& Buttons();
+  static void AddButtons(const std::vector<Button>& buttons);
   static void NextUp();
   static void NextDown(); 
   static void Press();
-  static void Redraw();
+  static void Clear();
+  static bool& Enabled();
 private:
-  static std::vector<Button> Buttons_;
-  static int selectedelem_;
+  static std::vector<Button> buttons_;
+  static int selectedbutton_;
 };

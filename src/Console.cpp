@@ -236,8 +236,44 @@ void Console::WriteListCentered(const std::vector<std::string>& text)
   }
 }
 
+void Console::ColorLine(Color color, unsigned length)
+{
+  SetColor(Color::WHITE, color);
+  std::string line;
+  for (unsigned i = 0; i < length; ++i)
+    line += " ";
+  std::cout << line;
+}
+
+void Console::ColorLineCentered(Color color, unsigned length)
+{
+  SetColor(Color::WHITE, color);
+  unsigned x = (GetSize().X - length) / 2;
+  std::string line;
+  for (unsigned i = 0; i < length; ++i)
+    line += " ";
+  SetCursorPosition(x, GetCursorPosition().Y);
+  std::cout << line;
+}
+
 std::string Console::ReadLine()
 {
+  std::string input;
+  std::getline(std::cin, input);
+  return input;
+}
+
+std::string Console::ReadLine(Color color)
+{
+  SetColor(color, Color::BLACK);
+  std::string input;
+  std::getline(std::cin, input);
+  return input;
+}
+
+std::string Console::ReadLine(Color color, Color highlight)
+{
+  SetColor(color, highlight);
   std::string input;
   std::getline(std::cin, input);
   return input;
@@ -249,10 +285,52 @@ std::string Console::ReadLinePrompt(const std::string& prompt, Color color)
   return ReadLine();
 }
 
+std::string Console::ReadLinePrompt(const std::string& prompt, Color color, Color highlight)
+{
+  Write(prompt, color, highlight);
+  return ReadLine();
+}
+
 std::string Console::ReadLinePrompt(const std::string& prompt)
 {
   Write(prompt);
   return ReadLine();
+}
+
+std::string Console::ReadLineAt(unsigned x, unsigned y)
+{
+  SetCursorPosition(x, y);
+  return ReadLine();
+}
+
+std::string Console::ReadLineAt(unsigned x, unsigned y, Color color)
+{
+  SetCursorPosition(x, y);
+  return ReadLine(color);
+}
+
+std::string Console::ReadLineAt(unsigned x, unsigned y, Color color, Color highlight)
+{
+  SetCursorPosition(x, y);
+  return ReadLine(color, highlight);
+}
+
+std::string Console::ReadLinePromptAt(unsigned x, unsigned y, const std::string& prompt, Color color)
+{
+  SetCursorPosition(x, y);
+  return ReadLinePrompt(prompt, color);
+}
+
+std::string Console::ReadLinePromptAt(unsigned x, unsigned y, const std::string& prompt)
+{
+  SetCursorPosition(x, y);
+  return ReadLinePrompt(prompt);
+}
+
+std::string Console::ReadLinePromptAt(unsigned x, unsigned y, const std::string& prompt, Color color, Color highlight)
+{
+  SetCursorPosition(x, y);
+  return ReadLinePrompt(prompt, color, highlight);
 }
 
 std::string Console::CenterString(const std::string& str)

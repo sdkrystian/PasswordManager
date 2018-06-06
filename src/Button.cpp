@@ -86,7 +86,6 @@ void Button::Press(bool press)
     }
     activateaction_();
   }
-
 }
 
 void Button::Show(bool show)
