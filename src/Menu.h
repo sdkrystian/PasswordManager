@@ -8,7 +8,8 @@ public:
   static std::vector<Button>& Buttons();
   static void AddButtons(const std::vector<Button>& buttons);
   static void SetInputCallback(std::function<void(std::string)> callback, unsigned x, unsigned y);
-  static void ExecuteInputCallback(std::string input);
+  static void ExecuteInputCallback(const std::string& input);
+  static void CloseCallback();
   static void NextUp();
   static void NextDown(); 
   static void Press();

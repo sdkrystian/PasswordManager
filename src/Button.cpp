@@ -1,6 +1,6 @@
 #include "Button.h"
 
-Button::Button(int x, int y, Color textcolor, Color backgroundcolor, Color selectedtextcolor, Color selectedbackgroundcolor, Color activatedtextcolor, const std::string& text, const std::string& selectedtext, const std::string& activatedtext, const std::function<void()>& activateaction, const std::function<void()>& deactivateaction, bool centered, bool show, bool activated) :
+Button::Button(unsigned x, unsigned y, Color textcolor, Color backgroundcolor, Color selectedtextcolor, Color selectedbackgroundcolor, Color activatedtextcolor, const std::string& text, const std::string& selectedtext, const std::string& activatedtext, const std::function<void()>& activateaction, const std::function<void()>& deactivateaction, bool centered, bool show, bool activated) :
   Object(x, y, show), textcolor_(textcolor), backgroundcolor_(backgroundcolor), selectedtextcolor_(selectedtextcolor), selectedbackgroundcolor_(selectedbackgroundcolor), activatedtextcolor_(activatedtextcolor), text_(text), selectedtext_(selectedtext), activatedtext_(activatedtext), activateaction_(activateaction), deactivateaction_(deactivateaction), activated_(activated), selected_(false)
 {
   if (centered)

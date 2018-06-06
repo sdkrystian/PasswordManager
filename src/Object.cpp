@@ -1,13 +1,13 @@
 #include "Object.h"
 
-Object::Object(int x, int y, bool show) : x_(x), y_(y), show_(show) { }
+Object::Object(unsigned x, unsigned y, bool show) : x_(x), y_(y), show_(show) { }
 
-int Object::X() const
+unsigned Object::X() const
 {
   return x_;
 }
 
-int Object::Y() const
+unsigned Object::Y() const
 {
   return y_;
 }

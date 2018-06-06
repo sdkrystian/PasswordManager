@@ -28,9 +28,16 @@ void Menu::SetInputCallback(std::function<void(std::string)> callback, unsigned 
   inputcallbacky_ = y;
 }
 
-void Menu::ExecuteInputCallback(std::string input)
+void Menu::ExecuteInputCallback(const std::string& input)
 {
   inputcallback_(input);
+}
+
+void Menu::CloseCallback()
+{
+  inputcallback_ = [] (std::string) {};
+  inputcallbackx_ = 0;
+  inputcallbacky_ = 0;
 }
 
 void Menu::NextUp()
