@@ -15,6 +15,7 @@
 
 void ShowConfiguration();
 void ShowMain();
+void ViewCategories();
 
 int main()
 { 
@@ -78,6 +79,66 @@ void NewCategory()
       ShowConfiguration();
     }
   }, (Console::GetSize().X - 16) / 2, 4);
+}
+
+void EntrySelection(Category& category)
+{
+  Menu::Clear();
+  Console::WriteLine("");
+  Console::WriteLineCentered("[ " + category.name + " ]", Color::LIGHT_AQUA);
+  Console::WriteLine("");
+  Console::WriteLineCentered("Select Entry", Color::LIGHT_GREEN);
+  int j = 0;
+  for (Entry& e : category.entries)
+  {
+    Menu::Buttons().emplace_back(0, (j++) + 4, Color::WHITE, Color::BLACK, Color::BLACK, Color::WHITE, Color::LIGHT_PURPLE, e.name, e.name, e.name, [&] () {
+      int spacing = 10;
+      Menu::Clear();
+      Console::WriteLine("");
+      Console::WriteLine("");
+      Console::WriteLineCentered("[ " + e.name + " ]", Color::LIGHT_AQUA);
+      Console::WriteLine("");
+      if (!e.username.empty())
+      {
+        Console::WriteLineCentered("Username: " + e.username);
+      }
+      else
+      {
+        --spacing;
+      }
+      if (!e.email.empty())
+      {
+        Console::WriteLineCentered("Email: " + e.email);
+      }
+      else
+      {
+        --spacing;
+      }
+      Console::WriteLineCentered("Password: " + e.password);
+      Console::WriteLineCentered("URL: " + e.url);
+      Console::WriteLineCentered("Note: " + e.note);
+      Menu::Buttons().emplace_back(0, spacing, Color::WHITE, Color::BLACK, Color::BLACK, Color::WHITE, Color::LIGHT_PURPLE, "Back", "Back", "Back", [&] () {EntrySelection(category); }, [] () {}, true);
+      Menu::Buttons()[0].Select();
+    }, [] () {}, true);
+  }
+  Menu::Buttons().emplace_back(0, j + 5, Color::WHITE, Color::BLACK, Color::BLACK, Color::WHITE, Color::LIGHT_PURPLE, "Back", "Back", "Back", ViewCategories, [] () {}, true);
+  Menu::Buttons()[0].Select();
+}
+
+void ViewCategories()
+{
+  Menu::Clear();
+  Console::WriteLine("");
+  Console::WriteLineCentered("[ categories ]", Color::LIGHT_AQUA);
+  Console::WriteLine("");
+  Console::WriteLineCentered("Select Category", Color::LIGHT_GREEN);
+  int i = 0;
+  for (Category& c : UserInfo::Categories())
+  {
+    Menu::Buttons().emplace_back(0, (i++) + 4, Color::WHITE, Color::BLACK, Color::BLACK, Color::WHITE, Color::LIGHT_PURPLE, c.name, c.name, c.name, [&] () { EntrySelection(c); }, [] () {}, true);
+  }
+  Menu::Buttons().emplace_back(0, i + 5, Color::WHITE, Color::BLACK, Color::BLACK, Color::WHITE, Color::LIGHT_PURPLE, "Back", "Back", "Back", ShowMain, [] () {}, true);
+  Menu::Buttons()[0].Select();
 }
 
 void DeleteCategory()
@@ -248,7 +309,7 @@ void ShowMain()
   Console::WriteLineCentered("program and api by: cry", Color::LIGHT_AQUA);
   Menu::AddButtons(std::vector<Button>
   {
-      Button(0, 4, Color::WHITE, Color::BLACK, Color::BLACK, Color::WHITE, Color::LIGHT_PURPLE, "Categories", "Categories", "Categories", [] () {}, [] () {}, true),
+      Button(0, 4, Color::WHITE, Color::BLACK, Color::BLACK, Color::WHITE, Color::LIGHT_PURPLE, "Categories", "Categories", "Categories", ViewCategories, [] () {}, true),
       Button(0, 5, Color::WHITE, Color::BLACK, Color::BLACK, Color::WHITE, Color::LIGHT_PURPLE, "Configuration", "Configuration", "Configuration", ShowConfiguration, [] () {}, true),
       Button(0, 6, Color::WHITE, Color::BLACK, Color::BLACK, Color::WHITE, Color::LIGHT_PURPLE, "License", "License", "License", [] () {}, [] () {}, true),
       Button(0, 7, Color::WHITE, Color::BLACK, Color::BLACK, Color::WHITE, Color::LIGHT_PURPLE, "Exit", "Exit", "Exit", [] () { exit(0); }, [] () {}, true)
