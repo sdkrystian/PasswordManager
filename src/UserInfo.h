@@ -1,6 +1,10 @@
 #pragma once
 #include <string>
 #include <vector>
+#include "rapidxml/rapidxml.hpp"
+#include "rapidxml/rapidxml_print.hpp"
+#include <fstream>
+#include <filesystem>
 
 struct Entry
 {

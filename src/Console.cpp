@@ -1,6 +1,4 @@
 #include "Console.h"
-#include <iostream>
-#include <bitset>
 
 void Console::Clear()
 {
@@ -341,7 +339,7 @@ std::string Console::CenterString(const std::string& str)
   GetConsoleScreenBufferInfo(handle, &screen);
   columns = screen.srWindow.Right - screen.srWindow.Left + 1;
   std::string output;
-  int padding = (columns / 2) - (str.size() / 2);
+  size_t padding = (columns / 2) - (str.size() / 2);
   for (int i = 0; i < padding; ++i)
   {
     output += ' ';

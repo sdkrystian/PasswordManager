@@ -2,7 +2,6 @@
 #include "Console.h"
 #include "Object.h"
 #include <functional>
-#include <iostream>
 
 class Button : public Object
 {

@@ -1,6 +1,8 @@
 #pragma once
 #include <map>
 #include <chrono>
+#include <windows.h>
+#include <iostream>
 
 class Input
 {

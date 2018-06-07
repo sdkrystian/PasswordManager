@@ -1,6 +1,7 @@
 #pragma once
 #include "Object.h"
 #include "Button.h"
+#include <functional>
 
 class Menu
 {

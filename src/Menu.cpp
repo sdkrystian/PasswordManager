@@ -1,8 +1,4 @@
 #include "Menu.h"
-#include <algorithm>
-#include <iostream>
-#include "Button.h"
-#include <functional>
 
 std::vector<Button> Menu::buttons_ = { };
 int Menu::selectedbutton_ = 0;

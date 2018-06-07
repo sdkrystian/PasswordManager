@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Information>
+	<Category name="Gaming">
+		<Entry name="Steam" username="cry" email="email@email.com" password="password" url="steamcommunity.com" note=" "/>
+		<Entry name="Origin" username="" email="cry@gmail.com" password="password" url="origin.com" note=" "/>
+	</Category>
+	<Category name="Email">
+		<Entry name="Gmail" username="cry" email="cry@gmail.com" password="password" url="gmail.com" note=" "/>
+		<Entry name="Yahoo" username="cry" email="cry@yahoo.com" password="password" url="yahoo.com" note=" "/>
+	</Category>
+	<Category name="Other">
+		<Entry name="Paypal" username="cry" email="cry@gmail.com" password="password" url="paypal.com" note=" "/>
+		<Entry name="Github" username="18" email="cry@gmail.com" password="password" url="github.com" note=" "/>
+	</Category>
+</Information>
+
