@@ -1,6 +1,14 @@
 #include "UserInfo.h"
 
 std::vector<Category> UserInfo::categories_;
+std::string UserInfo::Configuration;
+
+void UserInfo::MoveConfig(const std::string& path)
+{
+  remove((Configuration + "\\information.xml").c_str());
+  Configuration = path;
+  Save();
+}
 
 std::vector<Category>& UserInfo::Categories()
 {
@@ -42,7 +50,7 @@ void UserInfo::Save()
       category->append_node(entry);
     }
   }
-  std::ofstream file(std::experimental::filesystem::v1::current_path().string() + "\\information.xml");
+  std::ofstream file(Configuration + "\\information.xml");
   file << doc;
   file.close();
   doc.clear();
@@ -53,7 +61,7 @@ void UserInfo::ReadFromFile()
   categories_.clear();
   rapidxml::xml_document<> doc;
   rapidxml::xml_node<> * rootnode;
-  std::ifstream file(std::experimental::filesystem::v1::current_path().string() + "\\information.xml");
+  std::ifstream file(Configuration + "\\information.xml");
   std::vector<char> buffer((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
   buffer.push_back('\0');
   doc.parse<0>(&buffer[0]);

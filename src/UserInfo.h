@@ -5,6 +5,7 @@
 #include "rapidxml/rapidxml_print.hpp"
 #include <fstream>
 #include <filesystem>
+#include <windows.h>
 
 struct Entry
 {
@@ -25,6 +26,8 @@ struct Category
 class UserInfo
 {
 public:
+  static std::string Configuration;
+  static void MoveConfig(const std::string& path);
   static std::vector<Category>& Categories();
   static void Save();
   static void ReadFromFile();

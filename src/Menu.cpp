@@ -36,6 +36,11 @@ void Menu::NextUp()
     buttons_[selectedbutton_].Select(false);
     buttons_[--selectedbutton_].Select(true);
   }
+  else
+  {
+    buttons_[selectedbutton_].Select(false);
+    buttons_[selectedbutton_ = buttons_.size() - 1].Select(true);
+  }
 }
 
 void Menu::NextDown()
@@ -44,6 +49,11 @@ void Menu::NextDown()
   {
     buttons_[selectedbutton_].Select(false);
     buttons_[++selectedbutton_].Select(true);
+  }
+  else
+  {
+    buttons_[selectedbutton_].Select(false);
+    buttons_[selectedbutton_ = 0].Select(true);
   }
 }
 

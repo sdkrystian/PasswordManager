@@ -17,13 +17,74 @@ void ShowMain();
 void ViewCategories();
 void DeleteEntry();
 
+std::string GetRegValue(HKEY root, const std::string& key, const std::string& name)
+{
+  HKEY hkey;
+  if (RegOpenKeyEx(root, key.c_str(), 0, KEY_READ | KEY_WOW64_64KEY, &hkey) != ERROR_SUCCESS)
+  {
+    return "";
+  }
+  DWORD type;
+  DWORD data;
+  if (RegQueryValueEx(hkey, name.c_str(), NULL, &type, NULL, &data) != ERROR_SUCCESS)
+  {
+    RegCloseKey(hkey);
+    return "";
+  }
+  if (type != REG_SZ)
+  {
+    RegCloseKey(hkey);
+    return "";
+  }
+  std::string value(data / sizeof(char), '\0');
+  if (RegQueryValueEx(hkey, name.c_str(), NULL, NULL, reinterpret_cast<LPBYTE>(&value[0]), &data) != ERROR_SUCCESS)
+  {
+    RegCloseKey(hkey);
+    return "";
+  }
+  RegCloseKey(hkey);
+  size_t first = value.find_first_of('\0');
+  if (first != std::string::npos)
+  {
+    value.resize(first);
+  }
+  return value;
+}
+
+void SetRegValue(HKEY root, const std::string& key, const std::string& name, const std::string& data)
+{
+  HKEY hkey;
+  LONG result = RegOpenKeyEx(root, key.c_str(), 0, KEY_ALL_ACCESS, &hkey);
+  if (result != ERROR_SUCCESS && result != ERROR_FILE_NOT_FOUND)
+  {
+    return;
+  }
+  if (result == ERROR_FILE_NOT_FOUND)
+  {
+    RegCreateKeyEx(root, key.c_str(), NULL, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkey, NULL);
+  }
+  RegSetValueEx(hkey, name.c_str(), NULL, REG_SZ, (LPCBYTE)data.c_str(), data.length() * sizeof(wchar_t));
+  RegCloseKey(hkey);
+}
+
 int main()
-{ 
+{
   Console::Resize(450, 300);
+  const std::string regvalue = GetRegValue(HKEY_CURRENT_USER, "Software\\PasswordManager", "Config");
+  if (regvalue.empty())
+  {
+    const std::string& currentpath = std::experimental::filesystem::v1::current_path().string();
+    SetRegValue(HKEY_CURRENT_USER, "Software\\PasswordManager", "Config", currentpath);
+    UserInfo::Configuration = currentpath;
+  }
+  else
+  {
+    UserInfo::Configuration = regvalue;
+  }
   HWND window = GetConsoleWindow();
   SetWindowLong(window, GWL_STYLE, GetWindowLong(window, GWL_STYLE) & ~WS_MAXIMIZEBOX & ~WS_SIZEBOX);
   Console::ShowConsoleCursor(false);
-  if (std::experimental::filesystem::v1::exists(std::experimental::filesystem::v1::current_path().string() + "\\information.xml"))
+  if (std::experimental::filesystem::v1::exists(UserInfo::Configuration + "\\information.xml"))
     UserInfo::ReadFromFile();
   Console::SetTitle("password manager");
   ShowMain();
@@ -328,6 +389,36 @@ void NewEntry()
   Menu::Buttons()[0].Select();
 }
 
+void ChangeConfig()
+{
+  Menu::Clear();
+  Console::WriteLine("");
+  Console::WriteLineCentered("[ change config file ]", Color::LIGHT_AQUA);
+  Console::WriteLine("");
+  Console::WriteLineCentered("New Config Path", Color::LIGHT_GREEN);
+  Console::ColorLineCentered(Color::LIGHT_GREEN, 52);
+  Console::SetColor(Color::LIGHT_PURPLE, Color::LIGHT_GREEN);
+  Menu::Enabled() = false;
+  Console::ShowConsoleCursor(true);
+  Menu::SetInputCallback([] (const std::string& path) 
+  {
+    Menu::Enabled() = true;
+    Console::ShowConsoleCursor(false);
+    if (!std::experimental::filesystem::v1::exists(path))
+    {
+      Popup(1000, 6, 20, 3, "Not Found", Color::WHITE, Color::LIGHT_RED);
+      ShowConfiguration();
+    }
+    else
+    {
+      Popup(1000, 6, 20, 3, "Config Changed", Color::LIGHT_PURPLE, Color::LIGHT_GREEN);
+      SetRegValue(HKEY_CURRENT_USER, "Software\\PasswordManager", "Config", path);
+      UserInfo::MoveConfig(path);
+      ShowConfiguration();
+    }
+  }, (Console::GetSize().X - 52) / 2, 4);
+}
+
 void ShowConfiguration()
 {
   Menu::Clear();
@@ -339,7 +430,8 @@ void ShowConfiguration()
       Button(0, 4, Color::WHITE, Color::BLACK, Color::BLACK, Color::LIGHT_RED, Color::LIGHT_PURPLE, "Delete Category", "Delete Category", "Delete Category", DeleteCategory, [] () {}, true),
       Button(0, 5, Color::WHITE, Color::BLACK, Color::BLACK, Color::LIGHT_GREEN, Color::LIGHT_PURPLE, "New Entry", "New Entry", "New Entry", NewEntry, [] () {}, true),
       Button(0, 6, Color::WHITE, Color::BLACK, Color::BLACK, Color::LIGHT_RED, Color::LIGHT_PURPLE, "Delete Entry", "Delete Entry", "Delete Entry", DeleteEntry, [] () {}, true),
-      Button(0, 7, Color::WHITE, Color::BLACK, Color::BLACK, Color::WHITE, Color::LIGHT_PURPLE, "Back", "Back", "Back", ShowMain, [] () {}, true)
+      Button(0, 7, Color::WHITE, Color::BLACK, Color::BLACK, Color::LIGHT_YELLOW, Color::LIGHT_PURPLE, "Config File", "Config File", "Config File", ChangeConfig, [] () {}, true),
+      Button(0, 8, Color::WHITE, Color::BLACK, Color::BLACK, Color::WHITE, Color::LIGHT_PURPLE, "Back", "Back", "Back", ShowMain, [] () {}, true)
   });
   Menu::Buttons()[0].Select(true);
 }
