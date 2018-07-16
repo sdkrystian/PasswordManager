@@ -6,6 +6,11 @@
 class Menu
 {
 public:
+  Menu() = delete;
+  Menu(const Menu&) = delete;
+  Menu& operator=(const Menu&) = delete;
+  Menu(Menu&&) = delete;
+  Menu& operator=(Menu&&) = delete;
   static std::vector<Button>& Buttons();
   static void AddButtons(const std::vector<Button>& buttons);
   static void SetInputCallback(std::function<void(const std::string&)> callback, unsigned x, unsigned y);

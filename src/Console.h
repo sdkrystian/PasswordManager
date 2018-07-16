@@ -27,6 +27,11 @@ enum class Color
 class Console
 {
 public:
+  Console() = delete;
+  Console(const Console&) = delete;
+  Console& operator=(const Console&) = delete;
+  Console(Console&&) = delete;
+  Console& operator=(Console&&) = delete;
   static void Clear();
   static void ClearLine(unsigned index);
   static void ClearAt(unsigned x, unsigned y, unsigned length);
