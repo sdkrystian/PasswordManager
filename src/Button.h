@@ -1,3 +1,5 @@
+// Copyright 2018 Krystian Stasiowski
+
 #pragma once
 #include "Console.h"
 #include "Object.h"

@@ -1,3 +1,5 @@
+// Copyright 2018 Krystian Stasiowski
+
 #include "Menu.h"
 
 std::vector<Button> Menu::buttons_ = { };

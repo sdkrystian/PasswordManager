@@ -1,11 +1,13 @@
+// Copyright 2018 Krystian Stasiowski
+
 #pragma once
+#include <windows.h>
+#include <filesystem>
 #include <string>
 #include <vector>
+#include <fstream>
 #include "rapidxml/rapidxml.hpp"
 #include "rapidxml/rapidxml_print.hpp"
-#include <fstream>
-#include <filesystem>
-#include <windows.h>
 
 struct Entry
 {

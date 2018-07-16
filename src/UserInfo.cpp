@@ -1,3 +1,5 @@
+// Copyright 2018 Krystian Stasiowski
+
 #include "UserInfo.h"
 
 std::vector<Category> UserInfo::categories_;

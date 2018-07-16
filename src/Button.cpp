@@ -1,3 +1,5 @@
+// Copyright 2018 Krystian Stasiowski
+
 #include "Button.h"
 
 Button::Button(unsigned x, unsigned y, Color textcolor, Color backgroundcolor, Color selectedtextcolor, Color selectedbackgroundcolor, Color activatedtextcolor, const std::string& text, const std::string& selectedtext, const std::string& activatedtext, const std::function<void()>& activateaction, const std::function<void()>& deactivateaction, bool centered, bool show, bool activated) :

@@ -1,7 +1,9 @@
+// Copyright 2018 Krystian Stasiowski
+
 #pragma once
+#include <windows.h>
 #include <map>
 #include <chrono>
-#include <windows.h>
 #include <iostream>
 
 class Input

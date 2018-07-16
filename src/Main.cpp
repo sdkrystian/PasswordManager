@@ -1,3 +1,5 @@
+// Copyright 2018 Krystian Stasiowski
+
 #include "Console.h"
 #include "Button.h"
 #include "Input.h"
@@ -145,7 +147,7 @@ void NewCategory()
   }, (Console::GetSize().X - 32) / 2, 4);
 }
 
-void EntrySelection(Category& category)
+void EntrySelection(const Category& category)
 {
   Menu::Clear();
   Console::WriteLine("");
@@ -153,7 +155,7 @@ void EntrySelection(Category& category)
   Console::WriteLine("");
   Console::WriteLineCentered("Select Entry", Color::LIGHT_GREEN);
   int j = 0;
-  for (Entry& e : category.entries)
+  for (const Entry& e : category.entries)
   {
     Menu::Buttons().emplace_back(0, (j++) + 4, Color::WHITE, Color::BLACK, Color::BLACK, Color::WHITE, Color::LIGHT_PURPLE, e.name, e.name, e.name, [&] () 
     {

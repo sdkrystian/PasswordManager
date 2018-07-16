@@ -1,3 +1,5 @@
+// Copyright 2018 Krystian Stasiowski
+
 #include "Popup.h"
 
 Popup::Popup(unsigned lifetime, unsigned y, unsigned sizex, unsigned sizey, const std::string& text, Color textcolor, Color backgroundcolor)
